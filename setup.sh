@@ -126,7 +126,7 @@ install_packages() {
     yes y| yay -S hyprutils-git 
     yay -S --noconfirm hyprpolkitagent-git swww neovim waybar matugen rofi \
         ttf-jetbrains-mono-nerd wlogout swaync zsh cliphist yazi blueman lutris \
-        cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow 
+        cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow brightnessctl hypridle  
     check_error "Failed to install additional packages"
 }
 
@@ -164,7 +164,7 @@ setup_dotfiles() {
         "yazi"
         "zsh"
     )
-    
+    rm ~/.config/kitty 
     # Backup existing configs before stowing
     print_message "$YELLOW" "Backing up existing configurations..."
     for package in "${stow_packages[@]}"; do
