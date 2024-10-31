@@ -84,7 +84,7 @@ get_installation_type() {
 install_base_packages() {
     print_message "$GREEN" "Installing base packages..."
     
-    sudo pacman -S --needed --noconfirm git base-devel
+    sudo pacman -S --needed --noconfirm git base-devel stow
     check_error "Failed to install base packages"
 }
 
@@ -125,26 +125,34 @@ install_packages() {
     
     yay -S --noconfirm hyprpolkitagent-git swww neovim waybar matugen rofi \
         ttf-jetbrains-mono-nerd wlogout swaync zsh cliphist yazi blueman lutris \
-        cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2
+        cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow xrandr
     check_error "Failed to install additional packages"
 }
 
-# Function to setup dotfiles
+# Updated function to setup dotfiles using stow
 setup_dotfiles() {
     local installation_type=$1
     local url=$2
 
-    print_message "$GREEN" "Cloning dotfiles repository..."
+    print_message "$GREEN" "Setting up dotfiles with GNU Stow..."
     
-    cd ~/clone || exit 1
-    git clone "$url" dotfiles
+    # Clone dotfiles to ~/.dotfiles instead of ~/clone/dotfiles
+    cd ~ || exit 1
+    
+    # Backup existing .dotfiles if it exists
+    if [ -d "$HOME/.dotfiles" ]; then
+        print_message "$YELLOW" "Backing up existing .dotfiles directory..."
+        mv "$HOME/.dotfiles" "$HOME/.dotfiles.backup.$(date +%Y%m%d_%H%M%S)"
+    fi
+    
+    # Clone the dotfiles repository
+    git clone "$url" "$HOME/.dotfiles"
     check_error "Failed to clone dotfiles repository"
-
-    # Ensure .config directory exists
-    mkdir -p ~/.config
-
-    # List of config directories to copy
-    local configs=(
+    
+    cd "$HOME/.dotfiles" || exit 1
+    
+    # List of stow packages (directories in your dotfiles repo)
+    local stow_packages=(
         "hypr"
         "waybar"
         "rofi"
@@ -155,30 +163,44 @@ setup_dotfiles() {
         "yazi"
         "zsh"
     )
-
-    print_message "$YELLOW" "Copying configuration files..."
     
-    for config in "${configs[@]}"; do
-        if [ -d "$HOME/clone/dotfiles/.config/$config" ]; then
-            cp -r "$HOME/clone/dotfiles/.config/$config" ~/.config/
-            print_message "$GREEN" "Copied $config configuration"
-        else
-            print_message "$YELLOW" "No configuration found for $config"
+    # Backup existing configs before stowing
+    print_message "$YELLOW" "Backing up existing configurations..."
+    for package in "${stow_packages[@]}"; do
+        if [ -d "$HOME/.config/$package" ]; then
+            mv "$HOME/.config/$package" "$HOME/.config/$package.backup.$(date +%Y%m%d_%H%M%S)"
+            print_message "$GREEN" "Backed up $package configuration"
         fi
     done
-
-    # Special handling for global configs
-    if [ -d "$HOME/clone/dotfiles/.zshrc" ]; then
-        cp "$HOME/clone/dotfiles/.zshrc" ~/ && print_message "$GREEN" "Copied .zshrc"
+    
+    # Special handling for .zshrc
+    if [ -f "$HOME/.zshrc" ]; then
+        mv "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+        print_message "$GREEN" "Backed up .zshrc"
     fi
-
+    
+    # Stow each package
+    print_message "$GREEN" "Stowing configuration packages..."
+    for package in "${stow_packages[@]}"; do
+        if [ -d "$package" ]; then
+            stow -v "$package"
+            check_error "Failed to stow $package"
+            print_message "$GREEN" "Stowed $package configuration"
+        else
+            print_message "$YELLOW" "No configuration found for $package"
+        fi
+    done
+    
     # Ask for further customization in non-owner case
     if [ "$installation_type" = "other" ]; then
-        read -p "Would you like to review and customize the copied configurations? (y/n): " customize
+        read -p "Would you like to review and customize the stowed configurations? (y/n): " customize
         if [ "$customize" = "y" ]; then
             print_message "$YELLOW" "Please manually review and modify configurations in ~/.config"
+            print_message "$YELLOW" "You can restow configurations after modifications using 'stow -R <package>'"
         fi
     fi
+    
+    cd ~ || exit 1
 }
 
 # Function to clone repositories
@@ -220,7 +242,7 @@ clone_repos() {
     cd ~/Pictures || exit 1
     git clone "${urls[3]}"
     
-    # Setup dotfiles
+    # Setup dotfiles using stow
     setup_dotfiles "$installation_type" "${urls[4]}"
     
     cd ~ || exit 1
