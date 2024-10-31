@@ -1,0 +1,127 @@
+configuration {
+    modi: "games";
+    show-icons: true;
+    display-games: "";  
+    hover-select: true;
+    font: "JetBrainsMono Nerd Font 12";
+    icon-theme: "papirus";
+}
+
+
+@theme "~/.config/rofi/colors.rasi"
+* {
+    background-alt: @primary;
+    selected: @secondary;
+    active: @surface;
+
+    text-selected: @surface;
+    text-color: @on-background;
+    border-color: @primary;
+
+    background-cl: @background;
+}
+
+window {
+    height: 41%;
+    width: 100%;
+    location:      south;
+    anchor:         south;
+    transparency: "real";
+    fullscreen: false;
+    enabled: true;
+    cursor: "default";
+    spacing: 0em;
+    padding: 0em;
+    border: 4px 4px 4px 4px;
+    border-radius: 10px;
+    border-color: @secondary;
+    background-color: transparent;
+}
+mainbox {
+    enabled: true;
+    spacing: 0em;
+    padding: 0em;
+    orientation: vertical;
+    children: [ "inputbar" , "listbox" ];
+    background-color: transparent;
+}
+
+
+// Lists //
+listbox {
+    padding: 5px 10px 5px 10px;
+    spacing: 0em;
+    orientation: vertical;
+    children: [ "listview" ];
+    background-color: transparent;
+}
+
+listview {
+    spacing: 10px;
+    padding: 7px 10px 0px 10px;
+    enabled: true;
+    border-radius: 10px;
+    border: 0px;
+    columns: 7;
+    lines: 1;
+    cycle: true;
+    dynamic: true;
+    layout: horizontal;
+    reverse: false;
+    fixed-columns: true;
+    background-color: @background;
+}
+
+// Inputs //
+inputbar {
+    enabled: true;
+    border-radius: 10px;
+    margin: 0px;
+    children: [ "entry" ];
+    background-color: transparent;
+}
+
+entry {
+    border-radius: 10px;
+    enabled: true;
+    spacing: 0px;
+    padding: 5px 0px 5px 5px;
+    text-color: @on-background;
+    background-color: @background-cl;
+}
+
+// Elements //
+element {
+    enabled: true;
+    spacing: 0em;
+    padding: 0em;
+    cursor: pointer;
+    orientation: vertical; 
+    background-color: transparent;
+    text-color: @on-background;
+}
+
+element selected.normal {
+    background-color: @selected;
+    text-color: @text-selected;
+}
+
+
+element-icon {
+    size: 35 %;
+    cursor: inherit;
+horizontal-align: 0.5;
+    background-color: transparent;
+    text-color: inherit;
+}
+
+element-text {
+enabled: false;
+    horizontal-align:               0.5;
+    cursor:                         inherit;
+    text-color: @text-color;
+}
+
+element-text selected {
+    text-color: @text-color-selected;
+}

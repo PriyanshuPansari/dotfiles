@@ -1,0 +1,11 @@
+# config_directory/config.toml
+[config]
+reload_apps = false
+set_wallpaper = false
+
+[config.custom_keywords]
+img_path = "/usr/share/sddm/themes/matugen/backgrounds/sddm.img"
+
+[templates.sddm]
+input_path = '~/.config/matugen/sddm-colors.conf'
+output_path = '/usr/share/sddm/themes/matugen/theme.conf'

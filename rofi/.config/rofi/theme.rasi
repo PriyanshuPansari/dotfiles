@@ -1,0 +1,11 @@
+@import "~/.config/rofi/colors.rasi"
+* {
+    main-bg:            @background;
+    main-fg:            @on-background;
+    main-br:            @secondary;
+    main-ex:            @tertiary;
+    select-bg:          @background;
+    select-fg:          @on-background;
+    separatorcolor:     transparent;
+    border-color:       transparent;
+}

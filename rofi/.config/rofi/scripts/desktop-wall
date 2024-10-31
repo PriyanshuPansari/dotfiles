@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Directories
+WALLPAPER_DIR="$HOME/Pictures/wallpapers"
+SCRIPT_DIR="$HOME/.config/hypr/scripts"
+
+# Function to set wallpaper
+set_wallpaper() {
+    local selected="$1"
+    # Remove any file extension from the selection if present
+    local filename="${selected%.*}"
+    
+    # Find the actual file with any supported extension
+    for ext in jpg jpeg png; do
+        if [ -f "$WALLPAPER_DIR/$filename.$ext" ]; then
+            "$SCRIPT_DIR/change_wallpaper.sh" "$WALLPAPER_DIR/$filename.$ext" >/dev/null 2>&1
+            return 0
+        fi
+    done
+}
+
+# If argument is provided, set the wallpaper
+if [ -n "$1" ]; then
+    set_wallpaper "$1"
+    exit 0
+fi
+
+# Change to wallpaper directory
+cd "$WALLPAPER_DIR" || exit 1
+
+# List wallpapers with icons but showing only filenames
+for file in *.{jpg,jpeg,png}; do
+    if [ -f "$file" ]; then
+        # Output filename without extension for display
+        filename="${file%.*}"
+        echo -e "$filename\0icon\x1f$WALLPAPER_DIR/$file"
+    fi
+done

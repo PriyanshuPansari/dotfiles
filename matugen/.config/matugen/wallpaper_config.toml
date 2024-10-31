@@ -1,0 +1,46 @@
+# config_directory/config.toml
+[config]
+reload_apps = true
+set_wallpaper = true
+wallpaper_tool = 'Swww'
+swww_options = [
+    "--transition-type",
+    "center",
+]
+
+[config.reload_apps_list]
+waybar = true
+kitty = true
+# gtk_theme = true
+hyprland=true
+rofi=true
+wlogout=true
+
+
+[templates.hyprland]
+input_path = '~/.config/matugen/hyprland-colors.conf'
+output_path = '~/.config/hypr/colors.conf'
+
+[templates.wlogout]
+input_path = '~/.config/matugen/wlogout_colors.css'
+output_path = '~/.config/wlogout/colors.css'
+
+[templates.waybar]
+input_path = '~/.config/matugen/colors.css'
+output_path = '~/.config/waybar/colors.css'
+
+[templates.kitty]
+input_path = '~/.config/matugen/kitty-colors.conf'
+output_path = '~/.config/kitty/colors.conf'
+#
+# [templates.gtk3]
+# input_path = '~/.config/matugen/gtk-colors.css'
+# output_path = '~/.config/gtk-3.0/colors.css'
+#
+# [templates.gtk4]
+# input_path = '~/.config/matugen/gtk-colors.css'
+# output_path = '~/.config/gtk-4.0/colors.css'
+
+[templates.rofi]
+input_path = '~/.config/matugen/rofi-colors.rasi'
+output_path = '~/.config/rofi/colors.rasi'
