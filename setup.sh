@@ -30,6 +30,15 @@ print_message() {
     echo -e "${color}${message}${NC}"
 }
 
+check_repo() {
+    local dir=$1
+    if [ -d "$dir/.git" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Function to check if command succeeded
 check_error() {
     if [ $? -ne 0 ]; then
@@ -95,37 +104,29 @@ install_yay() {
     mkdir -p ~/clone
     cd ~/clone || exit 1
     
-    if [ ! -d "yay" ]; then
+    if check_repo "yay"; then
+        print_message "$YELLOW" "Yay repository exists, updating..."
+        cd yay || exit 1
+        git pull
+        check_error "Failed to update yay"
+    else
         git clone https://aur.archlinux.org/yay.git
         check_error "Failed to clone yay"
+        cd yay || exit 1
     fi
     
-    cd yay || exit 1
     makepkg -si --noconfirm
     check_error "Failed to install yay"
     
     cd ~ || exit 1
 }
-
-# Function to configure pacman
-configure_pacman() {
-    print_message "$GREEN" "Configuring pacman..."
-    
-    sudo sed -i 's/^#Color$/Color/' /etc/pacman.conf
-    sudo sed -i 's/^#VerbosePkgLists$/VerbosePkgLists/' /etc/pacman.conf
-    
-    if ! grep -q "^ILoveCandy" /etc/pacman.conf; then
-        sudo sed -i '/^\[options\]/a ILoveCandy' /etc/pacman.conf
-    fi
-}
-
 # Function to install additional packages
 install_packages() {
     print_message "$GREEN" "Installing additional packages..."
-    
+    yes y| yay -S hyprutils-git 
     yay -S --noconfirm hyprpolkitagent-git swww neovim waybar matugen rofi \
         ttf-jetbrains-mono-nerd wlogout swaync zsh cliphist yazi blueman lutris \
-        cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow xrandr
+        cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow 
     check_error "Failed to install additional packages"
 }
 
@@ -203,6 +204,24 @@ setup_dotfiles() {
     cd ~ || exit 1
 }
 
+# Function to update or clone repository
+update_or_clone_repo() {
+    local url=$1
+    local dir=$2
+    local repo_name=$(basename "$url" .git)
+
+    if check_repo "$dir/$repo_name"; then
+        print_message "$YELLOW" "Repository $repo_name exists, updating..."
+        cd "$dir/$repo_name" || exit 1
+        git pull
+        check_error "Failed to update $repo_name"
+        cd - > /dev/null || exit 1
+    else
+        print_message "$GREEN" "Cloning $repo_name..."
+        git clone "$url" "$dir/$repo_name"
+        check_error "Failed to clone $repo_name"
+    fi
+}
 # Function to clone repositories
 clone_repos() {
     local installation_type=$1
@@ -214,46 +233,58 @@ clone_repos() {
         urls=("${REPO_URLS_OTHER[@]}")
     fi
     
+    mkdir -p ~/clone
     cd ~/clone || exit 1
     
-    # Clone rofi-games and lib_game_detector
-    git clone "${urls[0]}"
-    check_error "Failed to clone rofi-games"
-    
-    git clone "${urls[1]}"
-    check_error "Failed to clone lib_game_detector"
+    # Update or clone rofi-games and lib_game_detector
+    update_or_clone_repo "${urls[0]}" ~/clone
+    update_or_clone_repo "${urls[1]}" ~/clone
     
     # Install rofi-games
-    cd rofi-games || exit 1
+    cd ~/clone/rofi-games || exit 1
     sudo just install
     check_error "Failed to install rofi-games"
     
-    # Install SDDM theme
+    # Update or install SDDM theme
     cd ~/clone || exit 1
-    git clone "${urls[2]}"
+    update_or_clone_repo "${urls[2]}" ~/clone
     sudo cp -r matugen-sddm-theme /usr/share/sddm/themes/matugen
-    mkdir -p /etc/sddm.conf.d/
+    sudo mkdir -p /etc/sddm.conf.d/
     echo -e "[Theme]\nCurrent=matugen" | sudo tee /etc/sddm.conf.d/sddm.conf
     sudo chown -R "$USER:$USER" /usr/share/sddm/themes/matugen/backgrounds
     sudo chown -R "$USER:$USER" /usr/share/sddm/themes/matugen/theme.conf
     
-    # Install wallpapers
+    # Update or install wallpapers
     mkdir -p ~/Pictures
     cd ~/Pictures || exit 1
-    git clone "${urls[3]}"
+    update_or_clone_repo "${urls[3]}" ~/Pictures
     
     # Setup dotfiles using stow
-    setup_dotfiles "$installation_type" "${urls[4]}"
+    if check_repo "$HOME/.dotfiles"; then
+        print_message "$YELLOW" "Dotfiles repository exists, updating..."
+        cd "$HOME/.dotfiles" || exit 1
+        git pull
+        check_error "Failed to update dotfiles"
+        cd - > /dev/null || exit 1
+    else
+        setup_dotfiles "$installation_type" "${urls[4]}"
+    fi
     
     cd ~ || exit 1
 }
-
 # Function to install Oh My Zsh
 install_oh_my_zsh() {
-    print_message "$GREEN" "Installing Oh My Zsh..."
-    
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-    check_error "Failed to install Oh My Zsh"
+    if [ -d "$HOME/.oh-my-zsh" ]; then
+        print_message "$YELLOW" "Oh My Zsh is already installed, updating..."
+        cd "$HOME/.oh-my-zsh" || exit 1
+        git pull
+        check_error "Failed to update Oh My Zsh"
+        cd - > /dev/null || exit 1
+    else
+        print_message "$GREEN" "Installing Oh My Zsh..."
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        check_error "Failed to install Oh My Zsh"
+    fi
 }
 
 install_grub_theme() {
@@ -316,15 +347,17 @@ main() {
     install_yay
     configure_pacman
     install_packages
-    clone_repos "$installation_type"
     install_oh_my_zsh
+    clone_repos "$installation_type"
     
     # Add GRUB theming step
     read -p "Would you like to install the Yorha GRUB theme? (y/n): " install_grub
     if [ "$install_grub" = "y" ]; then
         install_grub_theme
     fi
-    
+
+    chsh -s $(which zsh)    
+    sudo chsh -s $(which zsh)    
     print_message "$GREEN" "Setup completed successfully!"
     print_message "$YELLOW" "Please log out and back in for all changes to take effect."
     print_message "$YELLOW" "Review and adjust configurations in ~/.config as needed."
