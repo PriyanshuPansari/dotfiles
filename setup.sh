@@ -68,25 +68,18 @@ detect_user_type() {
 
 # Function to prompt user for installation type
 get_installation_type() {
-    local detected_type=$(detect_user_type)
-    local installation_type
-
-    print_message "$YELLOW" "Detected user type: $detected_type"
+    # Remove all the print statements for now
+    local owner_username="undead"
     
-    if [ "$detected_type" = "owner" ]; then
-        print_message "$YELLOW" "Checking SSH key configuration..."
-        if ! ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
-            print_message "$RED" "SSH key not configured for GitHub. Falling back to HTTPS."
-            installation_type="other"
+    if [ "$USER" = "$owner_username" ]; then
+        if ssh -T git@github.com 2>&1 | grep -qi "authenticated"; then
+            echo "owner"
         else
-            installation_type="owner"
+            echo "other"
         fi
     else
-        installation_type="other"
+        echo "other"
     fi
-
-    print_message "$GREEN" "Using $([ "$installation_type" = "owner" ] && echo "SSH" || echo "HTTPS") URLs for git repositories"
-    echo "$installation_type"
 }
 
 # Function to install base packages
@@ -225,14 +218,17 @@ update_or_clone_repo() {
 # Function to clone repositories
 clone_repos() {
     local installation_type=$1
-    local urls=()
+    local -a urls
+    
+    echo -n "$installation_type" | xxd
     
     if [ "$installation_type" = "owner" ]; then
         urls=("${REPO_URLS_OWNER[@]}")
+        print_message "$GREEN" "Using SSH URLs for repositories"
     else
         urls=("${REPO_URLS_OTHER[@]}")
+        print_message "$GREEN" "Using HTTPS URLs for repositories"
     fi
-    
     mkdir -p ~/clone
     cd ~/clone || exit 1
     
@@ -286,54 +282,115 @@ install_oh_my_zsh() {
         check_error "Failed to install Oh My Zsh"
     fi
 }
+# Function to detect screen resolution
+detect_resolution() {
+    local resolution
+    
+    # Try using xrandr first
+    if command -v xrandr >/dev/null 2>&1; then
+        resolution=$(xrandr | grep '*' | awk '{print $1}' | head -n 1)
+    fi
+    
+    # If xrandr fails, try using wayland's way
+    if [ -z "$resolution" ] && command -v wlr-randr >/dev/null 2>&1; then
+        resolution=$(wlr-randr | grep -oP '\d+x\d+' | head -n 1)
+    fi
+    
+    # If both fail, use default resolution
+    if [ -z "$resolution" ]; then
+        print_message "$YELLOW" "Could not automatically detect screen resolution. Using default 1920x1080."
+        resolution="1920x1080"
+    fi
+    
+    echo "$resolution"
+}
 
-install_grub_theme() {
-    print_message "$GREEN" "Installing Yorha GRUB theme..."
+# Function to create temporary directory
+setup_workspace() {
+    print_message "$GREEN" "Setting up workspace..."
+    
+    # Create temporary directory
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR" || exit 1
+    
+    # Clone the repository
+    git clone https://github.com/OliveThePuffin/yorha-grub-theme.git
+    check_error "Failed to clone Yorha GRUB theme repository"
+}
+
+# Function to cleanup temporary files
+cleanup() {
+    print_message "$GREEN" "Cleaning up temporary files..."
+    rm -rf "$TEMP_DIR"
+}
+# Function to install theme
+install_theme() {
+    local resolution=$1
+    local theme_folder
+    
+    print_message "$GREEN" "Installing Yorha GRUB theme for resolution $resolution..."
     
     # Create themes directory if it doesn't exist
     sudo mkdir -p /boot/grub/themes
-    
-    # Clone the Yorha GRUB theme repository
-    cd ~/clone || exit 1
-    git clone https://github.com/OliveThePuffin/yorha-grub-theme.git
-    check_error "Failed to clone Yorha GRUB theme repository"
-    
-    # Detect screen resolution
-    resolution=$(xrandr | grep '*' | awk '{print $1}' | head -n 1)
-    
-    if [ -z "$resolution" ]; then
-        print_message "$YELLOW" "Could not automatically detect screen resolution. Please manually select a theme folder."
-        resolution="1920x1080"  # Default fallback
-    fi
+    check_error "Failed to create GRUB themes directory"
     
     # Find matching theme folder
-    theme_folder=$(find ~/clone/yorha-grub-theme -type d -name "*$resolution" | head -n 1)
+    theme_folder=$(find ./yorha-grub-theme -type d -name "*$resolution" | head -n 1)
     
     if [ -z "$theme_folder" ]; then
-        print_message "$RED" "No theme found for resolution $resolution. Using default 1920x1080."
-        theme_folder=$(find ~/clone/yorha-grub-theme -type d -name "*1920x1080" | head -n 1)
+        print_message "$YELLOW" "No theme found for resolution $resolution. Using 1920x1080 as fallback."
+        theme_folder=$(find ./yorha-grub-theme -type d -name "*1920x1080" | head -n 1)
     fi
     
     if [ -n "$theme_folder" ]; then
         # Copy theme to GRUB themes directory
         sudo cp -r "$theme_folder" /boot/grub/themes/
+        check_error "Failed to copy theme files"
         
-        # Modify GRUB configuration
-        theme_name=$(basename "$theme_folder")
+        # Get theme name and update GRUB configuration
+        local theme_name=$(basename "$theme_folder")
+        
+        # Backup original GRUB configuration
+        sudo cp /etc/default/grub /etc/default/grub.backup
+        check_error "Failed to backup GRUB configuration"
+        
+        # Update GRUB configuration
         sudo sed -i "s|^#*GRUB_THEME=.*|GRUB_THEME=\"/boot/grub/themes/$theme_name/theme.txt\"|" /etc/default/grub
+        check_error "Failed to update GRUB configuration"
         
         # Update GRUB
-        sudo update-grub
+        if command -v update-grub >/dev/null 2>&1; then
+            sudo update-grub
+        else
+            sudo grub-mkconfig -o /boot/grub/grub.cfg
+        fi
+        check_error "Failed to update GRUB"
         
-        print_message "$GREEN" "GRUB theme installed successfully for resolution $resolution"
+        print_message "$GREEN" "GRUB theme installed successfully!"
+        print_message "$YELLOW" "Original GRUB configuration backed up to /etc/default/grub.backup"
     else
         print_message "$RED" "Failed to find a suitable GRUB theme folder"
         exit 1
     fi
-    
-    cd ~ || exit 1
 }
 
+
+install_grub_theme() {
+    local resolution=$(detect_resolution)
+    print_message "$GREEN" "Detected screen resolution: $resolution"
+    
+    setup_workspace
+    # Install theme
+    install_theme "$resolution"
+    
+    # Cleanup
+    cleanup
+    
+    print_message "$GREEN" "Installation completed successfully!"
+    print_message "$YELLOW" "Please reboot your system to see the new GRUB theme."
+
+
+}
 # Main function
 main() {
     check_root
@@ -342,14 +399,15 @@ main() {
     
     local installation_type
     installation_type=$(get_installation_type)
-    
+    print_message "$GREEN" "installation_type: $installation_type"
+
     install_base_packages
     install_yay
     configure_pacman
     install_packages
-    install_oh_my_zsh
+
     clone_repos "$installation_type"
-    
+
     # Add GRUB theming step
     read -p "Would you like to install the Yorha GRUB theme? (y/n): " install_grub
     if [ "$install_grub" = "y" ]; then
