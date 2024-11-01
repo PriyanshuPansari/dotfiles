@@ -120,7 +120,7 @@ install_packages() {
     yay -S --noconfirm hyprpolkitagent-git swww neovim waybar matugen rofi \
         ttf-jetbrains-mono-nerd wlogout swaync zsh cliphist yazi blueman lutris \
         cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow brightnessctl hypridle \
-        pavucontrol 
+        pavucontrol hyprlock jq pipewire pipewire-pulse wireplumber bluez bluez-libs bluez-utils 
     check_error "Failed to install additional packages"
 }
 
@@ -416,7 +416,8 @@ main() {
     fi
 
     chsh -s $(which zsh)    
-    sudo chsh -s $(which zsh)    
+    sudo chsh -s $(which zsh)  
+    systemctl enable bluetooth
     print_message "$GREEN" "Setup completed successfully!"
     print_message "$YELLOW" "Please log out and back in for all changes to take effect."
     print_message "$YELLOW" "Review and adjust configurations in ~/.config as needed."
