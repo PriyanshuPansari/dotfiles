@@ -120,7 +120,8 @@ install_packages() {
     yay -S --noconfirm hyprpolkitagent-git swww neovim waybar matugen rofi \
         ttf-jetbrains-mono-nerd wlogout swaync zsh cliphist yazi blueman lutris \
         cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow brightnessctl hypridle \
-        pavucontrol hyprlock jq pipewire pipewire-pulse wireplumber bluez bluez-libs bluez-utils ripgrep libva-nvidia-driver 
+        pavucontrol hyprlock jq pipewire pipewire-pulse wireplumber bluez bluez-libs bluez-utils ripgrep libva-nvidia-driver \
+        pamixer
     check_error "Failed to install additional packages"
 }
 
