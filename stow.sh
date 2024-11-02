@@ -1,14 +1,17 @@
+# Function to print colored output
+print_message() {
+    local color=$1
+    local message=$2
+    echo -e "${color}${message}${NC}"
+}
+
+
+
 setup_dotfiles() {
     print_message "$GREEN" "Setting up dotfiles with GNU Stow..."
     
     # Clone dotfiles to ~/.dotfiles instead of ~/clone/dotfiles
     cd ~ || exit 1
-    
-    # Backup existing .dotfiles if it exists
-    if [ -d "$HOME/.dotfiles" ]; then
-        print_message "$YELLOW" "Backing up existing .dotfiles directory..."
-        mv "$HOME/.dotfiles" "$HOME/.dotfiles.backup.$(date +%Y%m%d_%H%M%S)"
-    fi
     
     # Clone the dotfiles repository
     
@@ -24,7 +27,7 @@ setup_dotfiles() {
         "wlogout"
         "nvim"
         "yazi"
-        "zsh"
+        "zshrc"
         "kitty"
     )
     rm -rf ~/.config/kitty 
@@ -48,7 +51,6 @@ setup_dotfiles() {
     for package in "${stow_packages[@]}"; do
         if [ -d "$package" ]; then
             stow -v --adopt "$package"
-            check_error "Failed to stow $package"
             print_message "$GREEN" "Stowed $package configuration"
         else
             print_message "$YELLOW" "No configuration found for $package"
