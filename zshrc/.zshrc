@@ -105,5 +105,12 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+alias ls='eza'
+alias la='eza -a'
+alias ll='eza -l --icons=always'
+alias lal='eza -al --icons=always'
+alias lt='eza -a --tree --level=1 --icons=always' 
+
 bindkey -v
-eval "$(register-python-argcomplete pipx)"
+# eval "$(register-python-argcomplete pipx)"
