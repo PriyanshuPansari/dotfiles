@@ -23,6 +23,29 @@ REPO_URLS_OTHER=(
     "https://github.com/PriyanshuPansari/dotfiles.git"
 )
 
+configure_pacman(){
+	pacman_conf="etc/pacman.conf"
+
+	links_to_edit=(
+	"Color"
+	"CheckSpace"
+	"VerbosePkgLists"
+	"ParallelDownloads"
+	)
+	
+	for line in "${lines_to_edit[@]}"; do
+	   if grep -i "^#$line" "$pacman_conf"; then
+		sudo sed -i "s/^#$line/$line/" "$pacamn_conf"
+	   fi
+	done
+	
+	if grep -q "^ParallelDownloads" "$pacman_conf" && ! grep -q "^ILoveCandy" "$pacman_conf"; then
+		sudo sed -i "/^ParallelDownloads/a ILoveCandy" "$pacman_conf"
+	fi
+
+	sudo pacman -Sy
+}
+
 # Function to print colored output
 print_message() {
     local color=$1
@@ -116,12 +139,13 @@ install_yay() {
 # Function to install additional packages
 install_packages() {
     print_message "$GREEN" "Installing additional packages..."
+    yay -R dunst mako rofi
     yes y| yay -S hyprutils-git 
-    yay -S --noconfirm hyprpolkitagent-git swww neovim waybar matugen rofi \
+    yay -S --noconfirm curl grim gvfs gvfs-mtp imagemagick inxi kvantum hyprpolkitagent-git swww neovim waybar matugen rofi-wayland \
         ttf-jetbrains-mono-nerd wlogout swaync zsh cliphist yazi blueman lutris \
         cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow brightnessctl hypridle \
-        pavucontrol hyprlock jq pipewire pipewire-pulse wireplumber bluez bluez-libs bluez-utils ripgrep libva-nvidia-driver \
-        pamixer kvantum pipewire-alsa qt5ct qt6ct qt6-svg xsg-utils yad
+        pavucontrol pamixer hyprlock jq pipewire pipewire-pulse wireplumber bluez bluez-libs bluez-utils ripgrep libva-nvidia-driver \
+        pamixer kvantum pipewire-alsa qt5ct qt6ct qt6-svg xdg-user-dirs xdg-utils yad yazi btop fastfetch 
     check_error "Failed to install additional packages"
 }
 
@@ -157,7 +181,7 @@ setup_dotfiles() {
         "wlogout"
         "nvim"
         "yazi"
-        "zsh"
+        "zshrc"
         "kitty"
     )
     rm -rf ~/.config/kitty 
