@@ -158,6 +158,7 @@ setup_dotfiles() {
         "nvim"
         "yazi"
         "zsh"
+        "kitty"
     )
     rm -rf ~/.config/kitty 
     # Backup existing configs before stowing
