@@ -158,7 +158,7 @@ setup_dotfiles() {
         "yazi"
         "zsh"
     )
-    rm ~/.config/kitty 
+    rm -rf ~/.config/kitty 
     # Backup existing configs before stowing
     print_message "$YELLOW" "Backing up existing configurations..."
     for package in "${stow_packages[@]}"; do
@@ -407,6 +407,7 @@ main() {
     configure_pacman
     install_packages
 
+    install_oh_my_zsh
     clone_repos "$installation_type"
 
     # Add GRUB theming step
