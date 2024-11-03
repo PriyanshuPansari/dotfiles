@@ -145,7 +145,7 @@ install_packages() {
         ttf-jetbrains-mono-nerd wlogout swaync zsh cliphist yazi blueman lutris \
         cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow brightnessctl hypridle \
         pavucontrol pamixer hyprlock jq pipewire pipewire-pulse wireplumber bluez bluez-libs bluez-utils ripgrep libva-nvidia-driver \
-        pamixer kvantum pipewire-alsa qt5ct qt6ct qt6-svg xdg-user-dirs xdg-utils yad yazi btop fastfetch 
+        pamixer kvantum pipewire-alsa qt5ct qt6ct qt6-svg xdg-user-dirs xdg-utils yad yazi btop fastfetch pyprland 
     check_error "Failed to install additional packages"
 }
 
