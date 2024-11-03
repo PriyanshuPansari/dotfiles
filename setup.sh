@@ -23,27 +23,38 @@ REPO_URLS_OTHER=(
     "https://github.com/PriyanshuPansari/dotfiles.git"
 )
 
-configure_pacman(){
-	pacman_conf="etc/pacman.conf"
+# Source the configuration files
+for config in "packages.conf" "repos.conf"; do
+    if [ -f "$config" ]; then
+        source "$config"
+    else
+        print_message "$RED" "$config not found!"
+        exit 1
+    fi
+done
 
-	links_to_edit=(
-	"Color"
-	"CheckSpace"
-	"VerbosePkgLists"
-	"ParallelDownloads"
-	)
-	
-	for line in "${lines_to_edit[@]}"; do
-	   if grep -i "^#$line" "$pacman_conf"; then
-		sudo sed -i "s/^#$line/$line/" "$pacamn_conf"
-	   fi
-	done
-	
-	if grep -q "^ParallelDownloads" "$pacman_conf" && ! grep -q "^ILoveCandy" "$pacman_conf"; then
-		sudo sed -i "/^ParallelDownloads/a ILoveCandy" "$pacman_conf"
-	fi
 
-	sudo pacman -Sy
+configure_pacman() {
+    pacman_conf="/etc/pacman.conf"
+
+    lines_to_edit=(
+        "Color"
+        "CheckSpace"
+        "VerbosePkgLists"
+        "ParallelDownloads"
+    )
+    
+    for line in "${lines_to_edit[@]}"; do
+        if grep -i "^#$line" "$pacman_conf"; then
+            sudo sed -i "s/^#$line/$line/" "$pacman_conf"
+        fi
+    done
+    
+    if grep -q "^ParallelDownloads" "$pacman_conf" && ! grep -q "^ILoveCandy" "$pacman_conf"; then
+        sudo sed -i "/^ParallelDownloads/a ILoveCandy" "$pacman_conf"
+    fi
+
+    sudo pacman -Sy
 }
 
 # Function to print colored output
@@ -139,14 +150,54 @@ install_yay() {
 # Function to install additional packages
 install_packages() {
     print_message "$GREEN" "Installing additional packages..."
-    yay -R dunst mako rofi
-    yes y| yay -S hyprutils-git 
-    yay -S --noconfirm curl grim gvfs gvfs-mtp imagemagick inxi kvantum hyprpolkitagent-git swww neovim waybar matugen rofi-wayland \
-        ttf-jetbrains-mono-nerd wlogout swaync zsh cliphist yazi blueman lutris \
-        cargo just qt5-graphicaleffects qt5-svg qt5-quickcontrols2 stow brightnessctl hypridle \
-        pavucontrol pamixer hyprlock jq pipewire pipewire-pulse wireplumber bluez bluez-libs bluez-utils ripgrep libva-nvidia-driver \
-        pamixer kvantum pipewire-alsa qt5ct qt6ct qt6-svg xdg-user-dirs xdg-utils yad yazi btop fastfetch pyprland 
+    
+    # Remove specified packages first
+    if [ ${#REMOVE_PACKAGES[@]} -gt 0 ]; then
+        yay -R "${REMOVE_PACKAGES[@]}"
+    fi
+    
+    # Install hyprutils-git with force yes
+    yay -S --noconfirm hyprutils-git
+    
+    # Install main packages
+    yay -S --noconfirm "${PACKAGES[@]}"
     check_error "Failed to install additional packages"
+
+    # Install audio packages based on selection
+    case "$AUDIO_SYSTEM" in
+        "pipewire")
+            print_message "$GREEN" "Installing PipeWire audio system..."
+            yay -S --noconfirm "${PIPEWIRE_PACKAGES[@]}"
+            check_error "Failed to install PipeWire packages"
+            
+            # Enable PipeWire services
+            systemctl --user enable pipewire.service
+            systemctl --user enable pipewire-pulse.service
+            systemctl --user enable wireplumber.service
+            ;;
+        "pulseaudio")
+            print_message "$GREEN" "Installing PulseAudio audio system..."
+            yay -S --noconfirm "${PULSEAUDIO_PACKAGES[@]}"
+            check_error "Failed to install PulseAudio packages"
+            
+            # Enable PulseAudio service
+            systemctl --user enable pulseaudio.service
+            ;;
+    esac
+
+    # Install gaming packages if selected
+    if [ "$INSTALL_GAMING" = true ]; then
+        print_message "$GREEN" "Installing gaming packages..."
+        yay -S --noconfirm "${GAMING_PACKAGES[@]}"
+        check_error "Failed to install gaming packages"
+    fi
+
+    # Install bluetooth packages if selected
+    if [ "$INSTALL_BLUETOOTH" = true ]; then
+        print_message "$GREEN" "Installing Bluetooth packages..."
+        yay -S --noconfirm "${BLUETOOTH_PACKAGES[@]}"
+        check_error "Failed to install Bluetooth packages"
+    fi
 }
 
 # Updated function to setup dotfiles using stow
@@ -171,23 +222,8 @@ setup_dotfiles() {
     
     cd "$HOME/.dotfiles" || exit 1
     
-    # List of stow packages (directories in your dotfiles repo)
-    local stow_packages=(
-        "hypr"
-        "waybar"
-        "rofi"
-        "swaync"
-        "matugen"
-        "wlogout"
-        "nvim"
-        "yazi"
-        "zshrc"
-        "kitty"
-    )
-    rm -rf ~/.config/kitty 
-    # Backup existing configs before stowing
-    print_message "$YELLOW" "Backing up existing configurations..."
-    for package in "${stow_packages[@]}"; do
+    # Use STOW_PACKAGES from repos.conf instead of hardcoded array
+    for package in "${STOW_PACKAGES[@]}"; do
         if [ -d "$HOME/.config/$package" ]; then
             mv "$HOME/.config/$package" "$HOME/.config/$package.backup.$(date +%Y%m%d_%H%M%S)"
             print_message "$GREEN" "Backed up $package configuration"
@@ -200,9 +236,9 @@ setup_dotfiles() {
         print_message "$GREEN" "Backed up .zshrc"
     fi
     
-    # Stow each package
+    # Stow each package using the configuration from repos.conf
     print_message "$GREEN" "Stowing configuration packages..."
-    for package in "${stow_packages[@]}"; do
+    for package in "${STOW_PACKAGES[@]}"; do
         if [ -d "$package" ]; then
             stow -v "$package"
             check_error "Failed to stow $package"
@@ -249,6 +285,7 @@ clone_repos() {
     
     echo -n "$installation_type" | xxd
     
+    # Use repository URLs from repos.conf
     if [ "$installation_type" = "owner" ]; then
         urls=("${REPO_URLS_OWNER[@]}")
         print_message "$GREEN" "Using SSH URLs for repositories"
@@ -427,6 +464,38 @@ main() {
     local installation_type
     installation_type=$(get_installation_type)
     print_message "$GREEN" "installation_type: $installation_type"
+
+    # Ask about audio system preference
+    while true; do
+        read -p "Which audio system would you like to use? (pipewire/pulseaudio): " audio_choice
+        case "$audio_choice" in
+            pipewire|pulseaudio)
+                AUDIO_SYSTEM="$audio_choice"
+                break
+                ;;
+            *)
+                print_message "$YELLOW" "Please enter either 'pipewire' or 'pulseaudio'"
+                ;;
+        esac
+    done
+
+    # Ask about gaming installation
+    read -p "Would you like to install gaming-related packages and repositories? (y/n): " gaming_choice
+    if [ "$gaming_choice" = "y" ]; then
+        INSTALL_GAMING=true
+        # Enable multilib if not already enabled
+        if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
+            print_message "$GREEN" "Enabling multilib repository..."
+            echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
+            sudo pacman -Sy
+        fi
+    fi
+
+    # Ask about Bluetooth installation
+    read -p "Would you like to install Bluetooth support? (y/n): " bluetooth_choice
+    if [ "$bluetooth_choice" = "y" ]; then
+        INSTALL_BLUETOOTH=true
+    fi
 
     install_base_packages
     install_yay

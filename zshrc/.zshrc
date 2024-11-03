@@ -11,6 +11,8 @@ export EDITOR=nvim
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="robbyrussell"
 
+export QT_STYLE_OVERRIDE=kvantum
+export QT_QPA_PLATFORMTHEME=qt6ct
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -106,11 +108,11 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias ls='eza'
-alias la='eza -a'
+alias ls='eza --icons'
+alias la='eza -a --icons'
 alias ll='eza -l --icons=always'
-alias lal='eza -al --icons=always'
-alias lt='eza -a --tree --level=1 --icons=always' 
+alias lla='eza -al --icons=always'
+alias lt='eza  -a --tree --level=1 --icons=always' 
 
 bindkey -v
 # eval "$(register-python-argcomplete pipx)"
