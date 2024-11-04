@@ -8,18 +8,7 @@ configuration {
     icon-theme: "papirus";
 }
 
-@theme "~/.config/rofi/colors.rasi"
-* {
-    background-alt: @primary;
-    selected: @secondary;
-    active: @surface;
-
-    text-selected: @surface;
-    text-color: @on-background;
-    border-color: @primary;
-
-    background-cl: @background;
-}
+@theme "~/.config/rofi/theme.rasi"
 
 // Main //
 window {
@@ -33,7 +22,7 @@ window {
     padding: 0em;
     border: 4px 4px 4px 4px;
     border-radius: 10px;
-    border-color: @secondary;
+    border-color: @border-secondary;
     background-color: transparent;
 }
 
@@ -61,8 +50,8 @@ entry {
     enabled: true;
     spacing: 0px;
     padding: 15px;
-    text-color: @on-background;
-    background-color: @background-cl;
+    text-color: @text-primary;
+    background-color: @bg-primary;
 }
 
 // Lists //
@@ -88,7 +77,7 @@ listview {
     layout: vertical;
     reverse: false;
     fixed-columns: true;
-    background-color: @background;
+    background-color: @bg-primary;
 }
 
 // Modes //
@@ -105,13 +94,13 @@ button {
     cursor: pointer;
     border-radius: 10px;
     padding: 3px;
-    background-color: @background;
-    text-color: @on-background;
+    background-color: @bg-surface;
+    text-color: @text-surface;
 }
 
 button selected {
-    background-color: @selected;
-    text-color: @text-selected;
+    background-color: @bg-surface-container;
+    text-color: @text-surface-container;
 }
 
 // Elements //
@@ -122,12 +111,12 @@ element {
     cursor: pointer;
     orientation: vertical; 
     background-color: transparent;
-    text-color: @on-background;
+    text-color: @text-primary;
 }
 
 element selected.normal {
-    background-color: @selected;
-    text-color: @text-selected;
+    background-color: @selected-bg;
+    text-color: @selected-text;
 }
 
 element-icon {

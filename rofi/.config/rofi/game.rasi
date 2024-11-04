@@ -7,19 +7,7 @@ configuration {
     icon-theme: "papirus";
 }
 
-
-@theme "~/.config/rofi/colors.rasi"
-* {
-    background-alt: @primary;
-    selected: @secondary;
-    active: @surface;
-
-    text-selected: @surface;
-    text-color: @on-background;
-    border-color: @primary;
-
-    background-cl: @background;
-}
+@theme "~/.config/rofi/theme.rasi"
 
 window {
     height: 41%;
@@ -34,7 +22,7 @@ window {
     padding: 0em;
     border: 4px 4px 4px 4px;
     border-radius: 10px;
-    border-color: @secondary;
+    border-color: @border-outline;
     background-color: transparent;
 }
 mainbox {
@@ -69,7 +57,7 @@ listview {
     layout: horizontal;
     reverse: false;
     fixed-columns: true;
-    background-color: @background;
+    background-color: @bg-primary;
 }
 
 // Inputs //
@@ -77,6 +65,7 @@ inputbar {
     enabled: true;
     border-radius: 10px;
     margin: 0px;
+    padding: 15px 10px 5px 10px;
     children: [ "entry" ];
     background-color: transparent;
 }
@@ -86,8 +75,8 @@ entry {
     enabled: true;
     spacing: 0px;
     padding: 5px 0px 5px 5px;
-    text-color: @on-background;
-    background-color: @background-cl;
+    text-color: @text-primary;
+    background-color: @bg-primary;
 }
 
 // Elements //
@@ -98,11 +87,11 @@ element {
     cursor: pointer;
     orientation: vertical; 
     background-color: transparent;
-    text-color: @on-background;
+    text-color: @text-primary;
 }
 
 element selected.normal {
-    background-color: @selected;
+    background-color: @selected-bg;
     text-color: @text-selected;
 }
 
@@ -116,12 +105,12 @@ horizontal-align: 0.5;
 }
 
 element-text {
-enabled: false;
-    horizontal-align:               0.5;
-    cursor:                         inherit;
-    text-color: @text-color;
+    enabled: false;
+    horizontal-align: 0.5;
+    cursor: inherit;
+    text-color: @text-primary;
 }
 
 element-text selected {
-    text-color: @text-color-selected;
+    text-color: @text-selected;
 }

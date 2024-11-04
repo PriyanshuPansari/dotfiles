@@ -1,11 +1,36 @@
-@import "~/.config/rofi/colors.rasi"
+/* Import the color definitions */
+@import "colors.rasi"
+
 * {
-    main-bg:            @background;
-    main-fg:            @on-background;
-    main-br:            @secondary;
-    main-ex:            @tertiary;
-    select-bg:          @background;
-    select-fg:          @on-background;
-    separatorcolor:     transparent;
-    border-color:       transparent;
+    /* Primary backgrounds and text */
+    bg-primary: @primary-container;
+    text-primary: @on-primary-container;
+    
+    /* Surface backgrounds and text */
+    bg-surface: @surface;
+    bg-surface-container: @surface-container;
+    text-surface: @on-surface;
+    text-surface-container: @on-surface-container;
+    
+    /* Base/Background colors */
+    bg-base: @background;
+    text-base: @on-background;
+    
+    /* Error states */
+    bg-error: @error;
+    text-error: @on-error;
+    
+    /* Border and outline colors */
+    border-primary: @primary;
+    border-secondary: @secondary;
+    border-outline: @outline;
+    
+    /* Selected state colors */
+    selected-bg: @primary;
+    selected-text: @on-primary;
+    
+    /* Alternative colors for specific uses */
+    alt-bg: @primary;
+    alt-selected: @secondary;
+    alt-active: @surface;
 }

@@ -113,6 +113,6 @@ alias la='eza -a --icons'
 alias ll='eza -l --icons=always'
 alias lla='eza -al --icons=always'
 alias lt='eza  -a --tree --level=1 --icons=always' 
-
+alias code='cursor'
 bindkey -v
 # eval "$(register-python-argcomplete pipx)"

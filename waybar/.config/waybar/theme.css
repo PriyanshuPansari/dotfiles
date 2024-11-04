@@ -1,7 +1,7 @@
 @import "colors.css";
 
-@define-color main-bg @surface;
-@define-color main-fg @primary;
+@define-color main-bg @secondary_container;
+@define-color main-fg @on_primary_container;
 
 @define-color wb-act-bg @secondary;
 @define-color wb-act-fg @on_secondary;
