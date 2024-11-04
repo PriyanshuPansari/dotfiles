@@ -3,8 +3,8 @@
 
 * {
     /* Primary backgrounds and text */
-    bg-primary: @surface-container;
-    text-primary: @on-surface-container;
+    bg-primary: @surface;
+    text-primary: @on-surface;
     
     /* Surface backgrounds and text */
     bg-surface: @surface-container;
@@ -23,7 +23,7 @@
     /* Border and outline colors */
     border-primary: @primary;
     border-secondary: @secondary;
-    border-outline: @outline;
+    border-outline: @primary;
     
     /* Selected state colors */
     selected-bg: @secondary;
