@@ -1,10 +1,10 @@
 @import "colors.css";
 
-@define-color main-bg @secondary_container;
+@define-color main-bg @primary_container;
 @define-color main-fg @on_primary_container;
 
-@define-color wb-act-bg @secondary;
-@define-color wb-act-fg @on_secondary;
+@define-color wb-act-bg @primary;
+@define-color wb-act-fg @on_primary;
 
 @define-color wb-hvr-bg @surface;
 @define-color wb-hvr-fg @on_surface;
