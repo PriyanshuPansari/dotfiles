@@ -3,14 +3,14 @@
 
 * {
     /* Primary backgrounds and text */
-    bg-primary: @primary-container;
-    text-primary: @on-primary-container;
+    bg-primary: @surface-container;
+    text-primary: @on-surface-container;
     
     /* Surface backgrounds and text */
-    bg-surface: @surface;
-    bg-surface-container: @surface-container;
-    text-surface: @on-surface;
-    text-surface-container: @on-surface-container;
+    bg-surface: @surface-container;
+    bg-surface-container: @secondary;
+    text-surface: @on-surface-container;
+    text-surface-container: @on-secondary;
     
     /* Base/Background colors */
     bg-base: @background;
@@ -26,9 +26,9 @@
     border-outline: @outline;
     
     /* Selected state colors */
-    selected-bg: @primary;
-    selected-text: @on-primary;
-    
+    selected-bg: @secondary;
+    selected-text: @on-secondary;
+  
     /* Alternative colors for specific uses */
     alt-bg: @primary;
     alt-selected: @secondary;
