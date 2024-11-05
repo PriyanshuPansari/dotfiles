@@ -4,7 +4,7 @@
     font-family: "JetBrainsMono Nerd Font";
     font-weight: bold;
     font-size: 12px;
-    min-height: 12px;
+    min-height: 14px;
 }
 
 @import "theme.css";
@@ -102,7 +102,7 @@ tooltip label {
 }
 
 #tray menu * {
-    min-height: 16px
+    min-height: 14px
 }
 
 #tray menu separator {

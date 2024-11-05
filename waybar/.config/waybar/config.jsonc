@@ -249,16 +249,6 @@
     "scroll-step": 5
 },
 
-    "custom/updates": {
-        "exec": "systemupdate.sh",
-        "return-type": "json",
-        "format": "{}",
-        "rotate": 0,
-        "on-click": "hyprctl dispatch exec 'systemupdate.sh up'",
-        "interval": 86400, // once every day
-        "tooltip": true,
-        "signal": 20,
-    },
     "custom/keybindhint": {
         "format": " ",
         "rotate": 0,
