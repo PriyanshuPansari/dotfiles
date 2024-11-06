@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -455,6 +456,59 @@ install_grub_theme() {
 
 
 }
+
+# Function to install Nvidia drivers and configure system
+install_nvidia() {
+    print_message "$GREEN" "Installing Nvidia packages and configuring system..."
+    
+    # Install Nvidia packages for each kernel
+    for krnl in $(cat /usr/lib/modules/*/pkgbase); do
+        for NVIDIA in "${krnl}-headers" "${nvidia_pkg[@]}"; do
+            yay -S --noconfirm "$NVIDIA"
+            check_error "Failed to install $NVIDIA"
+        done
+    done
+
+    # Configure mkinitcpio
+    if ! grep -qE '^MODULES=.*nvidia.*nvidia_modeset.*nvidia_uvm.*nvidia_drm' /etc/mkinitcpio.conf; then
+        sudo sed -Ei 's/^(MODULES=\([^\)]*)\)/\1 nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+        print_message "$GREEN" "Added Nvidia modules to mkinitcpio.conf"
+    fi
+    
+    sudo mkinitcpio -P
+    check_error "Failed to regenerate initramfs"
+
+    # Configure modprobe
+    local nvidia_conf="/etc/modprobe.d/nvidia.conf"
+    if [ ! -f "$nvidia_conf" ]; then
+        echo "options nvidia_drm modeset=1 fbdev=1" | sudo tee "$nvidia_conf"
+        check_error "Failed to create nvidia.conf"
+    fi
+
+    # Configure GRUB
+    if [ -f /etc/default/grub ]; then
+        if ! grep -q "nvidia-drm.modeset=1" /etc/default/grub; then
+            sudo sed -i -e 's/\(GRUB_CMDLINE_LINUX_DEFAULT=".*\)"/\1 nvidia-drm.modeset=1"/' /etc/default/grub
+        fi
+        if ! grep -q "nvidia_drm.fbdev=1" /etc/default/grub; then
+            sudo sed -i -e 's/\(GRUB_CMDLINE_LINUX_DEFAULT=".*\)"/\1 nvidia_drm.fbdev=1"/' /etc/default/grub
+        fi
+        sudo grub-mkconfig -o /boot/grub/grub.cfg
+        check_error "Failed to update GRUB configuration"
+    fi
+
+    # Blacklist nouveau
+    read -p "Would you like to blacklist nouveau? (y/n): " blacklist_choice
+    if [ "$blacklist_choice" = "y" ]; then
+        local nouveau_conf="/etc/modprobe.d/nouveau.conf"
+        if [ ! -f "$nouveau_conf" ]; then
+            echo "blacklist nouveau" | sudo tee "$nouveau_conf"
+            echo "install nouveau /bin/true" | sudo tee -a "/etc/modprobe.d/blacklist.conf"
+            print_message "$GREEN" "Nouveau has been blacklisted"
+        fi
+    fi
+}
+
 # Main function
 main() {
     check_root
@@ -509,6 +563,12 @@ main() {
     read -p "Would you like to install the Yorha GRUB theme? (y/n): " install_grub
     if [ "$install_grub" = "y" ]; then
         install_grub_theme
+    fi
+
+    # Ask about Nvidia installation
+    read -p "Would you like to install Nvidia drivers and configure the system? (y/n): " nvidia_choice
+    if [ "$nvidia_choice" = "y" ]; then
+        install_nvidia
     fi
 
     chsh -s $(which zsh)    

@@ -108,8 +108,8 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias ls='eza --icons'
-alias la='eza -a --icons'
+alias ls='eza --icons=always'
+alias la='eza -a --icons=always'
 alias ll='eza -l --icons=always'
 alias lla='eza -al --icons=always'
 alias lt='eza  -a --tree --level=1 --icons=always' 
