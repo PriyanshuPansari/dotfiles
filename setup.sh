@@ -475,7 +475,6 @@ install_nvidia() {
         print_message "$GREEN" "Added Nvidia modules to mkinitcpio.conf"
     fi
     
-    sudo mkinitcpio -P
     check_error "Failed to regenerate initramfs"
 
     # Configure modprobe
@@ -485,6 +484,7 @@ install_nvidia() {
         check_error "Failed to create nvidia.conf"
     fi
 
+    sudo mkinitcpio -P
     # Configure GRUB
     if [ -f /etc/default/grub ]; then
         if ! grep -q "nvidia-drm.modeset=1" /etc/default/grub; then
