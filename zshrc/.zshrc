@@ -75,6 +75,7 @@ export QT_QPA_PLATFORMTHEME=qt6ct
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git
 vi-mode
+fancy-ctrl-z
   )
 
 source $ZSH/oh-my-zsh.sh
@@ -115,4 +116,6 @@ alias lla='eza -al --icons=always'
 alias lt='eza  -a --tree --level=1 --icons=always' 
 alias code='cursor'
 bindkey -v
-# eval "$(register-python-argcomplete pipx)"
+export WORKON_HOME=~/.virtualenvs
+eval "$(zoxide init --cmd cd zsh)"
+source /usr/bin/virtualenvwrapper.sh

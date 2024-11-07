@@ -47,6 +47,10 @@ output_path = '~/.config/waybar/colors.css'
 [templates.kitty]
 input_path = '~/.config/matugen/kitty-colors.conf'
 output_path = '~/.config/kitty/colors.conf'
+
+[templates.gradience]
+input_path= '~/.config/matugen/gradience.json'
+output_path= '~/.config/gradience/gradience.json'
 #
 # [templates.gtk3]
 # input_path = '~/.config/matugen/gtk-colors.css'
