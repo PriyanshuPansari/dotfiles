@@ -13,6 +13,8 @@ ZSH_THEME="robbyrussell"
 
 export QT_STYLE_OVERRIDE=kvantum
 export QT_QPA_PLATFORMTHEME=qt6ct
+
+export PATH="$HOME/.cargo/bin:$PATH"
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -117,5 +119,5 @@ alias lt='eza  -a --tree --level=1 --icons=always'
 alias code='cursor'
 bindkey -v
 export WORKON_HOME=~/.virtualenvs
-eval "$(zoxide init --cmd cd zsh)"
+eval "$(zoxide init zsh)"
 source /usr/bin/virtualenvwrapper.sh
