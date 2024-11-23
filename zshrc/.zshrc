@@ -121,3 +121,11 @@ bindkey -v
 export WORKON_HOME=~/.virtualenvs
 eval "$(zoxide init zsh)"
 source /usr/bin/virtualenvwrapper.sh
+if [ -f ~/.zshrc_custom ]; then
+  source ~/.zshrc_custom
+fi
+alias clone='function _clone() { git clone git@github.com:PriyanshuPansari/$1.git; }; _clone'
+
+
+# Created by `pipx` on 2024-11-18 10:58:12
+export PATH="$PATH:/home/undead/.local/bin"

@@ -1,12 +1,6 @@
 # config_directory/config.toml
 [config]
 reload_apps = true
-set_wallpaper = true
-wallpaper_tool = 'Swww'
-swww_options = [
-    "--transition-type",
-    "center",
-]
 
 [config.reload_apps_list]
 waybar = true
@@ -15,6 +9,11 @@ kitty = true
 hyprland=true
 rofi=true
 wlogout=true
+
+[config.wallpaper]
+command = "swww"
+arguments = ["img", "--transition-type", "center" ]
+set=true
 
 [templates.kvantum]
 input_path = '~/.config/matugen/kvantum.kvconfig'
@@ -51,6 +50,7 @@ output_path = '~/.config/kitty/colors.conf'
 [templates.gradience]
 input_path= '~/.config/matugen/gradience.json'
 output_path= '~/.config/gradience/gradience.json'
+
 #
 # [templates.gtk3]
 # input_path = '~/.config/matugen/gtk-colors.css'
