@@ -1,15 +1,21 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
+source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 # Path to your Oh My Zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
 export EDITOR=nvim
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
 
 export QT_STYLE_OVERRIDE=kvantum
 export QT_QPA_PLATFORMTHEME=qt6ct
@@ -80,7 +86,6 @@ vi-mode
 fancy-ctrl-z
   )
 
-source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
@@ -120,7 +125,6 @@ alias code='cursor'
 bindkey -v
 export WORKON_HOME=~/.virtualenvs
 eval "$(zoxide init zsh)"
-source /usr/bin/virtualenvwrapper.sh
 if [ -f ~/.zshrc_custom ]; then
   source ~/.zshrc_custom
 fi
@@ -129,3 +133,6 @@ alias clone='function _clone() { git clone git@github.com:PriyanshuPansari/$1.gi
 
 # Created by `pipx` on 2024-11-18 10:58:12
 export PATH="$PATH:/home/undead/.local/bin"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
