@@ -1,15 +1,10 @@
-/// Config //
 configuration {
-    modi: "drun,filebrowser,window,run";
+    modi: "desktop-wall:~/.config/rofi/scripts/desktop-wall,sddm-wall:~/.config/rofi/scripts/sddm-wall";
     show-icons: true;
-    display-drun:                " ";
-    display-run:                 " ";
-    display-filebrowser:         " ";
-    display-window:              " ";
-    drun-display-format: "{name}";
+    display-desktop-wall: "󰸉";  
+    display-sddm-wall: "";    
     hover-select: true;
-    window-format: "{w}{c}{t}";
-    font: "JetBrainsMono Nerd Font 10";
+    font: "JetBrainsMono Nerd Font 12";
     icon-theme: "papirus";
 }
 
@@ -17,9 +12,11 @@ configuration {
 
 // Main //
 window {
-    height: 580px;
-    width: 500px;
+    height: 41%;
+    width: 100%;
     transparency: "real";
+    location:      south;
+    anchor:         south;
     fullscreen: false;
     enabled: true;
     cursor: "default";
@@ -70,12 +67,12 @@ listbox {
 
 listview {
     padding: 0px;
-    spacing: 0px;
+    spacing: 10px;
     enabled: true;
     border-radius: 10px;
     border: 0px;
-    columns: 1;
-    lines: 5;
+    columns: 4;
+    lines: 3;
     cycle: true;
     dynamic: true;
     scrollbar: true;
@@ -114,6 +111,7 @@ element {
     spacing: 0em;
     padding: 0.5em;
     cursor: pointer;
+    orientation: vertical; 
     background-color: transparent;
     text-color: @text-primary;
 }
@@ -124,15 +122,15 @@ element selected.normal {
 }
 
 element-icon {
-    size: 3em;
+    size: 20%;
     cursor: inherit;
+horizontal-align: 0.5;
     background-color: transparent;
     text-color: inherit;
 }
 
 element-text {
-    vertical-align: 0.5;
-    horizontal-align: 0.0;
+    horizontal-align: 0.5;
     cursor: inherit;
     background-color: transparent;
     text-color: inherit;
@@ -140,8 +138,8 @@ element-text {
 
 // Error message //
 error-message {
-    text-color: @text-error;
-    background-color: @bg-error;
+    text-color: @background;
+    background-color: @background-alt;
     text-transform: capitalize;
     children: [ "textbox" ];
 }
@@ -156,7 +154,7 @@ textbox {
 scrollbar {
     width: 2px;
     border: 0;
-    handle-color: @border-outline;
+    handle-color: @border-color;
     handle-width: 6px;
     padding: 0;
 }

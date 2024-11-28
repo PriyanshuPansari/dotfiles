@@ -65,6 +65,10 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # much, much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # You can set one of the optional three formats:

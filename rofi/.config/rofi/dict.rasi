@@ -1,0 +1,195 @@
+/**
+ * rofi -dump-theme output.
+ * Rofi version: 1.7.5
+ **/
+* {
+    primary-fixed-dim:          rgba ( 132, 210, 231, 100 % );
+    primary-fixed:              rgba ( 172, 237, 255, 100 % );
+    background:                 rgba ( 15, 20, 22, 100 % );
+    on-tertiary-container:      rgba ( 221, 225, 255, 100 % );
+    bg-surface:                 var(surface-container);
+    surface-container-low:      rgba ( 23, 28, 30, 100 % );
+    outline-variant:            rgba ( 63, 72, 75, 100 % );
+    shadow:                     Black;
+    secondary-container:        rgba ( 51, 74, 81, 100 % );
+    on-background:              rgba ( 222, 227, 229, 100 % );
+    surface-container-high:     rgba ( 37, 43, 45, 100 % );
+    error:                      rgba ( 255, 180, 171, 100 % );
+    on-primary-fixed-variant:   rgba ( 0, 78, 92, 100 % );
+    alt-active:                 var(surface);
+    on-surface:                 rgba ( 222, 227, 229, 100 % );
+    selected-text:              var(on-secondary);
+    on-primary:                 rgba ( 0, 54, 64, 100 % );
+    selected-bg:                var(secondary);
+    bg-primary:                 var(surface);
+    on-tertiary-fixed-variant:  rgba ( 63, 69, 101, 100 % );
+    bg-base:                    var(background);
+    surface-container:          rgba ( 27, 32, 34, 100 % );
+    on-primary-fixed:           rgba ( 0, 31, 38, 100 % );
+    border-primary:             var(primary);
+    on-secondary:               rgba ( 29, 52, 58, 100 % );
+    primary-container:          rgba ( 0, 78, 92, 100 % );
+    secondary:                  rgba ( 178, 203, 210, 100 % );
+    tertiary-fixed-dim:         rgba ( 191, 196, 235, 100 % );
+    border-secondary:           var(secondary);
+    surface-container-lowest:   rgba ( 9, 15, 17, 100 % );
+    on-error:                   rgba ( 105, 0, 5, 100 % );
+    surface:                    rgba ( 15, 20, 22, 100 % );
+    error-container:            rgba ( 147, 0, 10, 100 % );
+    border-outline:             var(primary);
+    tertiary-fixed:             rgba ( 221, 225, 255, 100 % );
+    primary:                    rgba ( 132, 210, 231, 100 % );
+    bg-surface-container:       var(secondary);
+    inverse-surface:            rgba ( 222, 227, 229, 100 % );
+    on-secondary-container:     rgba ( 206, 231, 239, 100 % );
+    text-base:                  var(on-background);
+    text-surface:               var(on-surface-container);
+    on-tertiary:                rgba ( 40, 47, 77, 100 % );
+    outline:                    rgba ( 137, 146, 149, 100 % );
+    text-primary:               var(on-surface);
+    on-secondary-fixed:         rgba ( 6, 31, 36, 100 % );
+    text-error:                 var(on-error);
+    scrim:                      Black;
+    text-surface-container:     var(on-secondary);
+    inverse-primary:            rgba ( 0, 104, 122, 100 % );
+    tertiary-container:         rgba ( 63, 69, 101, 100 % );
+    alt-selected:               var(secondary);
+    secondary-fixed-dim:        rgba ( 178, 203, 210, 100 % );
+    bg-error:                   var(error);
+    surface-container-highest:  rgba ( 48, 54, 56, 100 % );
+    inverse-on-surface:         rgba ( 44, 49, 51, 100 % );
+    on-error-container:         rgba ( 255, 218, 214, 100 % );
+    tertiary:                   rgba ( 191, 196, 235, 100 % );
+    on-secondary-fixed-variant: rgba ( 51, 74, 81, 100 % );
+    on-tertiary-fixed:          rgba ( 19, 25, 55, 100 % );
+    alt-bg:                     var(primary);
+    surface-dim:                rgba ( 15, 20, 22, 100 % );
+    surface-bright:             rgba ( 52, 58, 60, 100 % );
+    secondary-fixed:            rgba ( 206, 231, 239, 100 % );
+    on-surface-variant:         rgba ( 191, 200, 203, 100 % );
+    on-primary-container:       rgba ( 172, 237, 255, 100 % );
+}
+window {
+    enabled:          true;
+    transparency:     "real";
+    padding:          0.0000em ;
+    fullscreen:       false;
+    cursor:           "default";
+    height:           580px ;
+    border-radius:    10px ;
+    border-color:     var(border-outline);
+    border:           4px ;
+    spacing:          0.0000em ;
+    width:            500px ;
+    background-color: transparent;
+}
+mainbox {
+    padding:          0.0000em ;
+    enabled:          true;
+    background-color: transparent;
+    orientation:      vertical;
+    spacing:          0.0000em ;
+    children:         [ "inputbar","listbox" ];
+}
+inputbar {
+    padding:          15px 10px 5px ;
+    enabled:          true;
+    margin:           0px ;
+    background-color: transparent;
+    border-radius:    10px ;
+    children:         [ "entry" ];
+}
+entry {
+    padding:          15px ;
+    enabled:          true;
+    background-color: var(bg-primary);
+    spacing:          0px ;
+    border-radius:    10px ;
+    text-color:       var(text-primary);
+}
+listbox {
+    padding:          5px 10px 10px ;
+    orientation:      vertical;
+    background-color: transparent;
+    spacing:          0.0000em ;
+    children:         [ "listview","mode-switcher" ];
+}
+listview {
+    enabled:          true;
+    fixed-columns:    true;
+    padding:          0px ;
+    scrollbar:        true;
+    reverse:          false;
+    cycle:            true;
+    lines:            5;
+    background-color: var(bg-primary);
+    border-radius:    10px ;
+    columns:          1;
+    border:           0px ;
+    spacing:          0px ;
+    layout:           vertical;
+    dynamic:          true;
+}
+mode-switcher {
+    orientation:      horizontal;
+    width:            50px ;
+    enabled:          true;
+    padding:          5px 5px 0px ;
+    background-color: transparent;
+    spacing:          5px 5px 1px 1px ;
+}
+button {
+    padding:          3px ;
+    background-color: var(bg-surface);
+    cursor:           pointer;
+    border-radius:    10px ;
+    text-color:       var(text-surface);
+}
+button selected {
+    background-color: var(bg-surface-container);
+    text-color:       var(text-surface-container);
+}
+element {
+    padding:          0.5000em ;
+    enabled:          true;
+    cursor:           pointer;
+    background-color: transparent;
+    spacing:          0.0000em ;
+    text-color:       var(text-primary);
+}
+element selected.normal {
+    background-color: var(selected-bg);
+    text-color:       var(selected-text);
+}
+element-icon {
+    size:             3.0000em ;
+    cursor:           inherit;
+    background-color: transparent;
+    text-color:       inherit;
+}
+element-text {
+    background-color: transparent;
+    vertical-align:   0.50;
+    cursor:           inherit;
+    horizontal-align: 0.00;
+    text-color:       inherit;
+}
+error-message {
+    background-color: var(bg-error);
+    text-transform:   capitalize ;
+    text-color:       var(text-error);
+    children:         [ "textbox" ];
+}
+textbox {
+    background-color: inherit;
+    vertical-align:   0.50;
+    horizontal-align: 0.50;
+    text-color:       inherit;
+}
+scrollbar {
+    width:        2px ;
+    padding:      0;
+    handle-width: 6px ;
+    border:       0;
+    handle-color: var(border-outline);
+}

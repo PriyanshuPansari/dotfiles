@@ -10,7 +10,7 @@ configuration {
 @theme "~/.config/rofi/theme.rasi"
 
 window {
-    height: 41%;
+    height: 43%;
     width: 100%;
     location:      south;
     anchor:         south;
@@ -47,16 +47,10 @@ listbox {
 listview {
     spacing: 10px;
     padding: 7px 10px 0px 10px;
-    enabled: true;
     border-radius: 10px;
     border: 0px;
-    columns: 7;
-    lines: 1;
-    cycle: true;
+    columns: env(ROFI_GAME_LAUNCHER_N_ENTRIES, 16);
     dynamic: true;
-    layout: horizontal;
-    reverse: false;
-    fixed-columns: true;
     background-color: @bg-primary;
 }
 
@@ -99,6 +93,7 @@ element selected.normal {
 element-icon {
     size: 35 %;
     cursor: inherit;
+    padding: 0px -40px;
 horizontal-align: 0.5;
     background-color: transparent;
     text-color: inherit;
