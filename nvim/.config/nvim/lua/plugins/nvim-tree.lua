@@ -1,4 +1,4 @@
--- File Explorer / Tree
+-- -- File Explorer / Tree
 return {
   -- https://github.com/nvim-tree/nvim-tree.lua
   'nvim-tree/nvim-tree.lua',

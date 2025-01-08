@@ -32,7 +32,15 @@ keymap.set("n", "<leader>to", ":tabnew<CR>") -- open a new tab
 keymap.set("n", "<leader>tx", ":tabclose<CR>") -- close a tab
 keymap.set("n", "<leader>tn", ":tabn<CR>") -- next tab
 keymap.set("n", "<leader>tp", ":tabp<CR>") -- previous tab
-
+keymap.set("n", "<leader>1", ":tabn 1<CR>") -- switch to tab 1
+keymap.set("n", "<leader>2", ":tabn 2<CR>") -- switch to tab 2
+keymap.set("n", "<leader>3", ":tabn 3<CR>") -- switch to tab 3
+keymap.set("n", "<leader>4", ":tabn 4<CR>") -- switch to tab 4
+keymap.set("n", "<leader>5", ":tabn 5<CR>") -- switch to tab 5
+keymap.set("n", "<leader>6", ":tabn 6<CR>") -- switch to tab 6
+keymap.set("n", "<leader>7", ":tabn 7<CR>") -- switch to tab 7
+keymap.set("n", "<leader>8", ":tabn 8<CR>") -- switch to tab 8
+keymap.set("n", "<leader>9", ":tabn 9<CR>") -- switch to tab 9
 -- Diff keymaps
 keymap.set("n", "<leader>cc", ":diffput<CR>") -- put diff from current to other during diff
 keymap.set("n", "<leader>cj", ":diffget 1<CR>") -- get diff from left (local) during merge

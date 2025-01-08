@@ -68,7 +68,7 @@ export PATH="$HOME/.cargo/bin:$PATH"
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
-
+setopt appendhistory
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # You can set one of the optional three formats:

@@ -7,7 +7,7 @@
     "position": "top",
     "mod": "dock",
     "height": 25,
-    "exclusive": true,
+    "exclusive": false,
     "ipc": true,
     "passthrough": false,
     "gtk-layer-shell": true,
