@@ -1,5 +1,5 @@
 
-#!/bin/bash
+#/usr/bin/env bash
 
 # Directories
 WALLPAPER_DIR="$HOME/Pictures/wallpapers"

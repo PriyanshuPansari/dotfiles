@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if ! pgrep -x "swww-daemon" > /dev/null; then
     swww-daemon --format xrgb &
